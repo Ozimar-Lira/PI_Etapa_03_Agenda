@@ -57,6 +57,18 @@ const form = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 20,
   },
+
+  container_map: {
+    //...StyleSheet.absoluteFillObject,
+    height: 200,
+    width: 400,
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 15,
+  },
+  map: {
+    ...StyleSheet.absoluteFillObject,
+  },
 });
 
 // Criamos a variavel fixa 'styles'
@@ -145,6 +157,17 @@ const header = StyleSheet.create({
   },
   title1: {
     fontSize: 32,
+  },
+
+  container_map: {
+    ...StyleSheet.absoluteFillObject,
+    height: 400,
+    width: 400,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  map: {
+    ...StyleSheet.absoluteFillObject,
   },
 });
 

@@ -1,4 +1,4 @@
-import React, {Component, useState} from 'react';
+import React, {Component, useState, useEffect} from 'react';
 import {View, Text, TextInput, Button, TouchableOpacity} from 'react-native';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -13,6 +13,10 @@ import HeaderHome from './HeaderHome/Index.js';
 import App from '../../App.js';
 import {Platform, PermissionsAndroid} from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
+import {enableLatestRenderer} from 'react-native-maps';
+import MapView, {PROVIDER_GOOGLE} from 'react-native-maps'; // remove PROVIDER_GOOGLE import if not using Google Maps
+
+enableLatestRenderer();
 
 const Form = () => {
   moment.updateLocale('pt-br');
@@ -24,6 +28,31 @@ const Form = () => {
   const [dados, setDados] = useState([]);
   const [count, setCount] = useState(0);
   const onPress = () => setCount(prevCount => prevCount + 1);
+  const [region, setRegion] = useState(null);
+
+  useEffect(() => {
+    getMyLocation();
+  }, []);
+
+  function getMyLocation() {
+    Geolocation.getCurrentPosition(
+      info => {
+        console.log('latitude', info.coords.latitude);
+        console.log('longitude', info.coords.longitude);
+
+        setRegion({
+          latitude: info.coords.latitude,
+          longitude: info.coords.longitude,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        });
+      },
+      () => {
+        console.log('deu erro no carregamento do mapa');
+      },
+      {enableHighAccuracy: true, timeout: 2000},
+    );
+  }
 
   async function requestPermissions() {
     console.log('entrou na funcao');
@@ -258,15 +287,35 @@ const Form = () => {
           onCancel={hideDatePicker}
         />
       </View>
-      <Text></Text>
-      <Text />
+
       <View>
         <View style={form.countContainer}>
-          <Text>Geolocalização: </Text>
+          <Text>Geolocalização: {(latitude, longitude)} </Text>
           <TouchableOpacity style={form.button} onPress={componentDidMount}>
             <Text style={form.textButton}>LOCALIZAÇÃO</Text>
           </TouchableOpacity>
         </View>
+        <View style={form.container_map}>
+          <MapView
+            provider={PROVIDER_GOOGLE} // remove if not using Google Maps
+            onMapReady={() => {
+              Platform.OS === 'android'
+                ? PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+                  ).then(() => {
+                    console.log('Mapa aceitou');
+                  })
+                : '';
+            }}
+            style={form.map}
+            region={region}
+            zoomEnabled={true}
+            minZoomLevel={17}
+            showsUserLocation={true}
+            loadingEnabled={true}
+          />
+        </View>
+        <Text></Text>
         <View style={form.countContainer}>
           <TouchableOpacity style={form.button} onPress={saveDados}>
             <Text style={form.textButton}>CADASTRAR</Text>
