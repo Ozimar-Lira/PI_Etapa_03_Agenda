@@ -290,7 +290,7 @@ const Form = () => {
 
       <View>
         <View style={form.countContainer}>
-          <Text>Geolocalização: {(latitude, longitude)} </Text>
+          <Text>Geolocalização: </Text>
           <TouchableOpacity style={form.button} onPress={componentDidMount}>
             <Text style={form.textButton}>LOCALIZAÇÃO</Text>
           </TouchableOpacity>
@@ -310,7 +310,7 @@ const Form = () => {
             style={form.map}
             region={region}
             zoomEnabled={true}
-            minZoomLevel={17}
+            minZoomLevel={5}
             showsUserLocation={true}
             loadingEnabled={true}
           />
